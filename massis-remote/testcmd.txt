@@ -1,0 +1,5 @@
+{"type" : "sayhello","agentId" : "12"}
+{"type" : "sayhello","agentId" : "18"}
+{"type" : "sayhello","agentId" : "19"}
+{"type" : "moverandomly","agentId" : "19"}
+{"type" : "moverandomly","agentId" : "12"}

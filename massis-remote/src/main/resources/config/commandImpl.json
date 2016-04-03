@@ -1,0 +1,4 @@
+{
+	"sayhello" : "com.massisframework.massis.remote.commands.SayHelloCommand",
+	"moverandomly" : "com.massisframework.massis.remote.commands.MoveRandomCommand"
+}
