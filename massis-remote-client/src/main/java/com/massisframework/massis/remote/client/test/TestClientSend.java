@@ -22,7 +22,7 @@ public class TestClientSend {
 			MassisSocketClient socket = new MassisSocketClient(
 					new URI("ws://127.0.0.1:4567/massis"));
 
-			socket.setLogLevel(Level.FINE);
+			socket.setLogLevel(Level.ALL);
 
 			if (socket.connectBlocking()) {
 
@@ -32,12 +32,14 @@ public class TestClientSend {
 				Semaphore sem = new Semaphore(0);
 
 				ArrayList<Integer> ids = new ArrayList<>();
+				
 				q.allLowLevelAgentsIds((res) -> {
 					if (res.getResponseType() == ResponseType.FINISHED) {
 						ids.addAll(res.getData());
 						sem.release();
 					}
 				});
+				
 				sem.acquire();
 				
 				

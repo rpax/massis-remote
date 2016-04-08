@@ -45,7 +45,7 @@ public class MassisSocketClient extends WebSocketClient
 	@Override
 	public void onMessage(String json) {
 		JsonObject message = gson.fromJson(json, JsonObject.class);
-		logger.fine(() -> "<<RESPONSE:\n  " + gson.toJson(message));
+		logger.info(() -> "<<RESPONSE:\n  " + gson.toJson(message));
 		String tag = message.get(TAG).getAsString();
 		JsonObject content = message.get(CONTENT).getAsJsonObject();
 		JsonServiceResponse response = gson.fromJson(content,
@@ -88,7 +88,7 @@ public class MassisSocketClient extends WebSocketClient
 		this.dataClasses.put(tag, item.getDataClass());
 		callObj.put(TAG, tag);
 		callObj.put(CONTENT, item);
-		logger.fine(() -> ">>REQUEST:\n  " + gson.toJson(callObj));
+		logger.info(() -> ">>REQUEST:\n  " + gson.toJson(callObj));
 		this.send(gson.toJson(callObj));
 	}
 
