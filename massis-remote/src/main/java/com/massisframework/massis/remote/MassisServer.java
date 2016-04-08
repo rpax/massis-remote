@@ -1,18 +1,14 @@
 package com.massisframework.massis.remote;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
+import static spark.Spark.init;
+import static spark.Spark.webSocket;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.massisframework.gui.DrawableLayer;
+import com.massisframework.jsoninvoker.reflect.JsonClientMessage;
+import com.massisframework.jsoninvoker.reflect.JsonServiceResponseHandler;
+import com.massisframework.jsoninvoker.reflect.ServiceMethodInvoker;
 import com.massisframework.massis.displays.floormap.layers.ConnectionsLayer;
 import com.massisframework.massis.displays.floormap.layers.CrowdDensityLayer;
 import com.massisframework.massis.displays.floormap.layers.DoorLayer;
@@ -28,15 +24,8 @@ import com.massisframework.massis.displays.floormap.layers.RoomsLayer;
 import com.massisframework.massis.displays.floormap.layers.VisibleAgentsLines;
 import com.massisframework.massis.displays.floormap.layers.VisionRadioLayer;
 import com.massisframework.massis.displays.floormap.layers.WallLayer;
-import com.massisframework.massis.model.agents.LowLevelAgent;
-import com.massisframework.massis.model.building.Building;
-import com.massisframework.massis.model.building.SimulationObject;
-import com.massisframework.massis.remote.commands.AbstractCommand;
-import com.massisframework.massis.remote.commands.CommandParser;
-import com.massisframework.massis.remote.commands.CommandResponseCallback;
-import com.massisframework.massis.remote.commands.MoveRandomCommand;
-import com.massisframework.massis.remote.highlevel.HighLevelCommandController;
-import com.massisframework.massis.sim.AbstractSimulation;
+import com.massisframework.massis.remote.jsoninvoker.LowLevelAgentQueryServiceServerImpl;
+import com.massisframework.massis.remote.services.agents.services.LowLevelAgentQueryService;
 import com.massisframework.massis.sim.Simulation;
 import com.massisframework.massis.sim.SimulationWithUI;
 
@@ -44,63 +33,24 @@ import sim.display.Console;
 
 public class MassisServer {
 
-	private Simulation simState;
-	private ExecutorService executor;
-	private Gson gson;
+	private static Simulation simState;
+	private static ServiceMethodInvoker invoker = new ServiceMethodInvoker();
 
-	public MassisServer(Simulation simState) {
-		this.simState = simState;
-		this.gson = new GsonBuilder().setPrettyPrinting().create();
-	}
-
-	public void start() {
-		this.executor = Executors.newSingleThreadExecutor();
-
-	}
-
-	private void stop() {
-		executor.shutdown();
-		try {
-			executor.awaitTermination(30, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			System.err.println("Interrupted while shutting down");
-		}
+	public static long getTick() {
+		return simState.schedule.getSteps();
 	}
 
 	public static void main(String[] args) {
 
 		// Open file, read command array.
 
-		MassisServer server = prepareSim();
-		server.start();
-		// sleep(10000);
-		// System.out.println("Start sending commands...");
-		// Arrays.asList(12, 18, 19, 20).forEach((id) -> {
-		// sleep(1000);
-		// server.submit(new MoveRandomCommand(id), (cr) -> {
-		// System.out.println(cr.getInfo());
-		// });
-		// });
-		try (Scanner sc = new Scanner(System.in)) {
-			while (true) {
-				String line = sc.nextLine();
-				if ("q".equals(line))
-					break;
-				AbstractCommand<?> command = CommandParser.getInstance()
-						.parseCommand(line);
-				server.submit(command, (cr) -> {
-					String json = server.gson.toJson(cr);
-					System.out.println(json);
-				});
-			}
-		}
+		simState = prepareSim();
+		invoker.registerService(LowLevelAgentQueryService.class,
+				new LowLevelAgentQueryServiceServerImpl(simState));
+		// Start
+		webSocket("/massis", MassisServerWebSocket.class);
+		init(); // Needed if you don't define any HTTP routes after your
 
-		server.stop();
-	}
-
-	private <CR> void submit(AbstractCommand<CR> sayHelloCommand,
-			CommandResponseCallback<CR> callback) {
-		this.executor.submit(() -> sayHelloCommand.runCommand(this, callback));
 	}
 
 	private static void sleep(long millis) {
@@ -111,22 +61,7 @@ public class MassisServer {
 		}
 	}
 
-	public HighLevelCommandController getHighLevelController(int id) {
-		final Building building = this.getSimulation().getBuilding();
-		SimulationObject simObj = building.getSimulationObject(id);
-		if ((simObj instanceof LowLevelAgent)) {
-			final LowLevelAgent lla = (LowLevelAgent) simObj;
-			if (lla.getHighLevelData() instanceof HighLevelCommandController) {
-				return (HighLevelCommandController) lla.getHighLevelData();
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
-
-	private static MassisServer prepareSim() {
+	private static Simulation prepareSim() {
 
 		String buildingFilePath = null;
 
@@ -162,16 +97,16 @@ public class MassisServer {
 		c.pressPlay();
 		c.pressPause();
 		c.setVisible(true);
-
-		return new MassisServer(simState);
+		return simState;
 	}
 
-	public AbstractSimulation getSimulation() {
-		return this.simState;
-	}
-
-	public long getTick() {
-		return this.simState.schedule.getSteps();
+	public static void invoke(JsonClientMessage<?> msg,
+			JsonServiceResponseHandler<?> handler) {
+		String serviceName = msg.getServiceName();
+		String methodName = msg.getMethod();
+		JsonObject jsonParams = new Gson().toJsonTree(msg.getParams())
+				.getAsJsonObject();
+		invoker.invokeMethod(serviceName, methodName, jsonParams, handler);
 	}
 
 }
