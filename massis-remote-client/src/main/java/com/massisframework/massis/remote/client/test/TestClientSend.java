@@ -21,53 +21,66 @@ public class TestClientSend {
 		try {
 			MassisSocketClient socket = new MassisSocketClient(
 					new URI("ws://127.0.0.1:4567/massis"));
-			
-			socket.setLogLevel(Level.INFO);
-			
+
+			socket.setLogLevel(Level.FINE);
+
 			if (socket.connectBlocking()) {
 
 				LowLevelAgentQueryClient q = new LowLevelAgentQueryClient(
 						socket);
 
-				Consumer<Integer> visionRadioPrinter = (id) -> {
-					q.getAgentsInVisionRadio(id, (res) -> {
-						if (res.getData() != null)
-							System.out.println("Agents in vision radio for: "
-									+ id + ": " + res.getData());
-					});
-				};
-
 				Semaphore sem = new Semaphore(0);
 
 				ArrayList<Integer> ids = new ArrayList<>();
-
-				q.allLowLevelAgentsIds((resp) -> {
-					if (resp.getResponseType() == ResponseType.FINISHED) {
-						for (Number i : resp.getData()) {
-							ids.add(i.intValue());
-						}
+				q.allLowLevelAgentsIds((res) -> {
+					if (res.getResponseType() == ResponseType.FINISHED) {
+						ids.addAll(res.getData());
 						sem.release();
 					}
 				});
-
 				sem.acquire();
-
-				ids.forEach(id -> q.getRandomLoc((resp) -> {
-					if (resp.getResponseType() == ResponseType.FINISHED) {
-						q.moveTo(id, resp.getData(), 0, (r2) -> {
-							visionRadioPrinter.accept(id);
-							// if (r2.getResponseType() ==
-							// ResponseType.FINISHED) {
-							// // sem.release();
-							// }
-						});
-					}
-				}));
 				
+				
+				System.out.println("ALL AGENTS: "+ids);
+				
+				
+				q.getAgentsInVisionRadio(18, (res) -> {
+					if (res.getData() != null)
+						System.out.println("Agents in vision radio for: "
+								+ 18 + ": " + res.getData());
+				});
+
+				//
+				//
+				// ArrayList<Integer> ids = new ArrayList<>();
+				//
+				// q.allLowLevelAgentsIds((resp) -> {
+				// if (resp.getResponseType() == ResponseType.FINISHED) {
+				// for (Number i : resp.getData()) {
+				// ids.add(i.intValue());
+				// }
+				// sem.release();
+				// }
+				// });
+				//
+				// sem.acquire();
+				//
+				// ids.forEach(id -> q.getRandomLoc((resp) -> {
+				// if (resp.getResponseType() == ResponseType.FINISHED) {
+				// q.moveTo(id, resp.getData(), 0, (r2) -> {
+				// visionRadioPrinter.accept(id);
+				// // if (r2.getResponseType() ==
+				// // ResponseType.FINISHED) {
+				// // // sem.release();
+				// // }
+				// });
+				// }
+				// }));
+
 				// sem.acquire(ids.size());
 				//
 				// socket.close();
-				
+
 			}
 
 		} catch (Exception e)

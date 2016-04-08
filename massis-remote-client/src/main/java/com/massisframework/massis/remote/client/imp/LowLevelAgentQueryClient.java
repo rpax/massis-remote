@@ -13,9 +13,9 @@ import com.massisframework.massis.remote.services.agents.services.LowLevelAgentQ
  * @author rpax
  *
  */
+@SuppressWarnings("unchecked")
 public class LowLevelAgentQueryClient implements LowLevelAgentQueryService {
 
-	private static final String REMOTE_SERVICE_NAME = "LowLevelAgentQueryService";
 	private MassisServiceSender sender;
 
 	public LowLevelAgentQueryClient(MassisServiceSender sender) {
@@ -26,44 +26,52 @@ public class LowLevelAgentQueryClient implements LowLevelAgentQueryService {
 	public void getAgentsIdsInRange(int objectId, double range,
 			JsonServiceResponseHandler<List<Integer>> handler) {
 
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"getAgentsIdsInRange", handler, List.class)
-								.addParam("objectId", objectId)
-								.addParam("range", range));
+		this.sender.send(new JsonClientMessage("getAgentsIdsInRange", handler,
+				List.class, objectId, range));
+
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
+		// "getAgentsIdsInRange", handler, List.class)
+		// .addParam("objectId", objectId)
+		// .addParam("range", range));
 	}
 
 	public void getAgentsInVisionRadio(int objectId,
 			JsonServiceResponseHandler<List<Integer>> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"getAgentsInVisionRadio", handler, List.class)
-								.addParam("objectId", objectId));
+		sender.send(new JsonClientMessage("getAgentsInVisionRadio", handler,
+				List.class, objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
+		// "getAgentsInVisionRadio", handler, List.class)
+		// .addParam("objectId", objectId));
 	}
 
 	public void getRoomId(int objectId,
 			JsonServiceResponseHandler<Integer> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getRoomId",
-						handler, Integer.class)
-								.addParam("objectId", objectId));
+		sender.send(new JsonClientMessage<>("getRoomId", handler, Integer.class,
+				objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getRoomId",
+		// handler, Integer.class)
+		// .addParam("objectId", objectId));
 	}
 
 	public void getAgentsIdsInRoom(int objectId,
 			JsonServiceResponseHandler<List<Integer>> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"getAgentsIdsInRoom", handler, List.class)
-								.addParam("objectId", objectId));
+
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
+		// "getAgentsIdsInRoom", handler, List.class)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void getVisionRadio(int objectId,
 			JsonServiceResponseHandler<Double> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"getAgentsIdsInRoom", handler, Double.class)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
+		// "getAgentsIdsInRoom", handler, Double.class)
+		// .addParam("objectId", objectId));
 	}
 
 	public void getVisionRadioPoints(int objectId,
@@ -74,111 +82,108 @@ public class LowLevelAgentQueryClient implements LowLevelAgentQueryService {
 
 	public void isInDoorArea(int objectId,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isInDoorArea",
-						handler, Boolean.class)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isInDoorArea",
+		// handler, Boolean.class)
+		// .addParam("objectId", objectId));
 	}
 
 	public void isObjectPerceived(int objectId, int otherObjectId,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isInDoorArea",
-						handler, Boolean.class)
-								.addParam("objectId", objectId)
-								.addParam("otherObjectId", otherObjectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isInDoorArea",
+		// handler, Boolean.class)
+		// .addParam("objectId", objectId)
+		// .addParam("otherObjectId", otherObjectId));
 
 	}
 
 	public void isPointContainedInVisionArea(int objectId, Point point,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"isPointContainedInVisionArea", handler, Boolean.class)
-								.addParam("objectId", objectId)
-								.addParam("point", point));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
+		// "isPointContainedInVisionArea", handler, Boolean.class)
+		// .addParam("objectId", objectId)
+		// .addParam("point", point));
 	}
 
 	public void isObstacle(int objectId,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isObstacle",
-						handler, Boolean.class)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isObstacle",
+		// handler, Boolean.class)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void isDynamic(int objectId,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isObstacle",
-						handler, Boolean.class)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "isObstacle",
+		// handler, Boolean.class)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void getBodyRadius(int objectId,
 			JsonServiceResponseHandler<Double> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getBodyRadius",
-						handler, Double.class)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getBodyRadius",
+		// handler, Double.class)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void isInNamedLocation(int objectId, String name, int radiusWithin,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"isInNamedLocation", handler, Boolean.class)
-								.addParam("name", name)
-								.addParam("radiusWithin", radiusWithin)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
+		// "isInNamedLocation", handler, Boolean.class)
+		// .addParam("name", name)
+		// .addParam("radiusWithin", radiusWithin)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void getProperty(int objectId, String propertyName,
 			JsonServiceResponseHandler<Object> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getProperty",
-						handler, Object.class)
-								.addParam("propertyName", propertyName)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getProperty",
+		// handler, Object.class)
+		// .addParam("propertyName", propertyName)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void hasProperty(int objectId, String propertyName,
 			JsonServiceResponseHandler<Boolean> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "hasProperty",
-						handler, Boolean.class)
-								.addParam("propertyName", propertyName)
-								.addParam("objectId", objectId));
+		// this.sender.send(
+		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "hasProperty",
+		// handler, Boolean.class)
+		// .addParam("propertyName", propertyName)
+		// .addParam("objectId", objectId));
 
 	}
 
 	public void allLowLevelAgentsIds(
 			JsonServiceResponseHandler<List<Integer>> handler) {
-		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-						"allLowLevelAgentsIds",
-						handler, List.class));
+		this.sender.send(new JsonClientMessage("allLowLevelAgentsIds", handler,
+				List.class, 0));
 	}
 
 	@Override
 	public void moveTo(int objectId, Point coordinates, int floorId,
 			JsonServiceResponseHandler<Point> handler) {
 		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "moveTo",
-						handler, Point.class).addParam("objectId", objectId)
-								.addParam("coordinates", coordinates)
-								.addParam("floorId", floorId));
+				new JsonClientMessage("moveTo", handler, Point.class, objectId,
+						coordinates, floorId));
 	}
 
 	@Override
-	public void getRandomLoc(JsonServiceResponseHandler<Point> handler) {
+	public void getRandomLoc(
+			JsonServiceResponseHandler<Point> handler) {
 		this.sender.send(
-				new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getRandomLoc",
-						handler, Point.class));
+				new JsonClientMessage<>("getRandomLoc", handler, Point.class,
+						0));
 	}
 }

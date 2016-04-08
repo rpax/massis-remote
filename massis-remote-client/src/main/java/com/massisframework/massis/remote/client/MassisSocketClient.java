@@ -24,7 +24,8 @@ public class MassisSocketClient extends WebSocketClient
 		implements MassisServiceSender {
 
 	private Gson gson;
-	private Logger logger=Logger.getLogger(MassisSocketClient.class.getName());
+	private Logger logger = Logger
+			.getLogger(MassisSocketClient.class.getName());
 	private static final String TAG = "TAG";
 	private static final String CONTENT = "CONTENT";
 	private HashMap<String, JsonServiceResponseHandler<?>> messageMemory;
@@ -36,13 +37,15 @@ public class MassisSocketClient extends WebSocketClient
 		this.messageMemory = new HashMap<>();
 		this.dataClasses = new HashMap<>();
 	}
+
 	public void setLogLevel(Level lvl) {
 		logger.setLevel(lvl);
 	}
+
 	@Override
 	public void onMessage(String json) {
 		JsonObject message = gson.fromJson(json, JsonObject.class);
-		logger.fine(()->"<<RESPONSE:\n  " + gson.toJson(message));
+		logger.fine(() -> "<<RESPONSE:\n  " + gson.toJson(message));
 		String tag = message.get(TAG).getAsString();
 		JsonObject content = message.get(CONTENT).getAsJsonObject();
 		JsonServiceResponse response = gson.fromJson(content,
@@ -52,7 +55,7 @@ public class MassisSocketClient extends WebSocketClient
 		JsonServiceResponseHandler<?> handler = messageMemory.get(tag);
 
 		response.setData(gson.fromJson(content.get("data"), dataClass));
-		
+
 		if (response.getResponseType() == ResponseType.ERROR
 				|| response.getResponseType() == ResponseType.FINISHED) {
 			dataClasses.remove(tag);
@@ -85,7 +88,7 @@ public class MassisSocketClient extends WebSocketClient
 		this.dataClasses.put(tag, item.getDataClass());
 		callObj.put(TAG, tag);
 		callObj.put(CONTENT, item);
-		logger.fine(()->">>REQUEST:\n  " + gson.toJson(callObj));
+		logger.fine(() -> ">>REQUEST:\n  " + gson.toJson(callObj));
 		this.send(gson.toJson(callObj));
 	}
 

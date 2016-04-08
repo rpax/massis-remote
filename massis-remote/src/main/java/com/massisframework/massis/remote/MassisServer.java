@@ -3,12 +3,17 @@ package com.massisframework.massis.remote;
 import static spark.Spark.init;
 import static spark.Spark.webSocket;
 
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.massisframework.gui.DrawableLayer;
 import com.massisframework.jsoninvoker.reflect.JsonClientMessage;
 import com.massisframework.jsoninvoker.reflect.JsonServiceResponseHandler;
 import com.massisframework.jsoninvoker.reflect.ServiceMethodInvoker;
+import com.massisframework.jsoninvoker.services.JsonMethod.JsonMethod1;
+import com.massisframework.jsoninvoker.services.JsonMethodInvoker;
 import com.massisframework.massis.displays.floormap.layers.ConnectionsLayer;
 import com.massisframework.massis.displays.floormap.layers.CrowdDensityLayer;
 import com.massisframework.massis.displays.floormap.layers.DoorLayer;
@@ -25,6 +30,7 @@ import com.massisframework.massis.displays.floormap.layers.VisibleAgentsLines;
 import com.massisframework.massis.displays.floormap.layers.VisionRadioLayer;
 import com.massisframework.massis.displays.floormap.layers.WallLayer;
 import com.massisframework.massis.remote.jsoninvoker.LowLevelAgentQueryServiceServerImpl;
+import com.massisframework.massis.remote.jsoninvoker.lowlevel.GetRoomId;
 import com.massisframework.massis.remote.services.agents.services.LowLevelAgentQueryService;
 import com.massisframework.massis.sim.Simulation;
 import com.massisframework.massis.sim.SimulationWithUI;
@@ -33,80 +39,15 @@ import sim.display.Console;
 
 public class MassisServer {
 
-	private static Simulation simState;
-	private static ServiceMethodInvoker invoker = new ServiceMethodInvoker();
+	public MassisServer() {
 
-	public static long getTick() {
-		return simState.schedule.getSteps();
 	}
 
 	public static void main(String[] args) {
 
-		// Open file, read command array.
-
-		simState = prepareSim();
-		invoker.registerService(LowLevelAgentQueryService.class,
-				new LowLevelAgentQueryServiceServerImpl(simState));
-		// Start
 		webSocket("/massis", MassisServerWebSocket.class);
-		init(); // Needed if you don't define any HTTP routes after your
+		init();
 
-	}
-
-	private static void sleep(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static Simulation prepareSim() {
-
-		String buildingFilePath = null;
-
-		buildingFilePath = "simplehouse.sh3d";
-		/*
-		 * Not needed, in this example. We are not going to load any kind of
-		 * resources during the simulation.
-		 */
-		final String resourceFolderPath = "";
-
-		final Simulation simState = new Simulation(System.currentTimeMillis(),
-				buildingFilePath, resourceFolderPath, null);
-		/**
-		 * Basic Layers. Can be added more, or removed.
-		 */
-		@SuppressWarnings("unchecked")
-		final DrawableLayer<DrawableFloor>[] floorMapLayers = new DrawableLayer[] {
-				new RoomsLayer(true), new RoomsLabelLayer(false),
-				new VisionRadioLayer(false), new CrowdDensityLayer(false),
-				new WallLayer(true), new DoorLayer(true),
-				new ConnectionsLayer(false), new PathLayer(false),
-				new PeopleLayer(true), new RadioLayer(true),
-				new PathFinderLayer(false), new PeopleIDLayer(false),
-				new VisibleAgentsLines(false), new QTLayer(false) };
-
-		final SimulationWithUI vid = new SimulationWithUI(simState,
-				floorMapLayers);
-
-		final Console c = new Console(vid);
-
-		c.setIncrementSeedOnStop(false);
-		//
-		c.pressPlay();
-		c.pressPause();
-		c.setVisible(true);
-		return simState;
-	}
-
-	public static void invoke(JsonClientMessage<?> msg,
-			JsonServiceResponseHandler<?> handler) {
-		String serviceName = msg.getServiceName();
-		String methodName = msg.getMethod();
-		JsonObject jsonParams = new Gson().toJsonTree(msg.getParams())
-				.getAsJsonObject();
-		invoker.invokeMethod(serviceName, methodName, jsonParams, handler);
 	}
 
 }
