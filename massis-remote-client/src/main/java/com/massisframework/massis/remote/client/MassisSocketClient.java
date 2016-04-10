@@ -1,5 +1,6 @@
 package com.massisframework.massis.remote.client;
 
+import java.io.Closeable;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import com.massisframework.jsoninvoker.reflect.JsonServiceResponse.ResponseType;
 import com.massisframework.massis.remote.client.imp.MassisServiceSender;
 
 public class MassisSocketClient extends WebSocketClient
-		implements MassisServiceSender {
+		implements MassisServiceSender,Closeable {
 
 	private Gson gson;
 	private Logger logger = Logger
@@ -37,9 +38,10 @@ public class MassisSocketClient extends WebSocketClient
 		this.messageMemory = new HashMap<>();
 		this.dataClasses = new HashMap<>();
 	}
-
+	
 	public void setLogLevel(Level lvl) {
 		logger.setLevel(lvl);
+		this.close();
 	}
 
 	@Override
