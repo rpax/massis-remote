@@ -40,20 +40,14 @@ public class LowLevelAgentQueryClient implements LowLevelAgentQueryService {
 			JsonServiceResponseHandler<List<Integer>> handler) {
 		sender.send(new JsonClientMessage("getAgentsInVisionRadio", handler,
 				List.class, objectId));
-		// this.sender.send(
-		// new JsonClientMessage<>(REMOTE_SERVICE_NAME,
-		// "getAgentsInVisionRadio", handler, List.class)
-		// .addParam("objectId", objectId));
+
 	}
 
 	public void getRoomId(int objectId,
 			JsonServiceResponseHandler<Integer> handler) {
 		sender.send(new JsonClientMessage<>("getRoomId", handler, Integer.class,
 				objectId));
-		// this.sender.send(
-		// new JsonClientMessage<>(REMOTE_SERVICE_NAME, "getRoomId",
-		// handler, Integer.class)
-		// .addParam("objectId", objectId));
+
 	}
 
 	public void getAgentsIdsInRoom(int objectId,
@@ -192,5 +186,15 @@ public class LowLevelAgentQueryClient implements LowLevelAgentQueryService {
 			JsonServiceResponseHandler<Point> handler) {
 		this.sender.send(new JsonClientMessage<>("getLocation", handler,
 				Point.class, objectId));
+	}
+
+	@Override
+	public void setProperty(int objectId, String propertyName,
+			Object propertyVal, JsonServiceResponseHandler<Object> handler) {
+
+		this.sender.send(
+				new JsonClientMessage<>("setProperty", handler, Object.class,
+						objectId, propertyName, propertyVal));
+
 	}
 }
