@@ -3,30 +3,13 @@ package com.massisframework.massis.remote.services.agents.services;
 import java.awt.Point;
 import java.util.List;
 
-import com.massisframework.jsoninvoker.annotations.JsonMethodParam;
-import com.massisframework.jsoninvoker.annotations.JsonServiceMethod;
 import com.massisframework.jsoninvoker.reflect.JsonServiceResponseHandler;
 
 public interface LowLevelAgentQueryService {
 
-	/**
-	 * 
-	 * 
-	 * @param range
-	 *            the radius of the circle.
-	 * @return the ids of the agents in the range provided
-	 */
-	@JsonServiceMethod(name = "getAgentsIdsInRange", description =
-	//
-	"Returns the agents' id lying in the area defined by the "
-			+ "location of the agent and the radius defined by the "
-			+ "range provided. It is an alternative method to "
-			+ "getAgentsInVisionRadio. The former is preferred to be used, "
-			+ "but this method can be useful for creating new low-level "
-			+ "operations.")
 	public void getAgentsIdsInRange(
-			@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("range") double range,
+			int objectId,
+			double range,
 			JsonServiceResponseHandler<List<Integer>> handler);
 
 	/**
@@ -34,9 +17,9 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return the agents in the vision radio of this agent.
 	 */
-	@JsonServiceMethod(name = "getAgentsInVisionRadio", description = "")
+
 	public void getAgentsInVisionRadio(
-			@JsonMethodParam("objectId") int objectId,
+			int objectId,
 			JsonServiceResponseHandler<List<Integer>> handler);
 
 	/**
@@ -44,8 +27,8 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return The room where the agent is
 	 */
-	@JsonServiceMethod(name = "getRoomId", description = "")
-	public void getRoomId(@JsonMethodParam("objectId") int objectId,
+
+	public void getRoomId(int objectId,
 			JsonServiceResponseHandler<Integer> handler);
 
 	/**
@@ -54,9 +37,9 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return the agents ids in the current room of the agent.
 	 */
-	@JsonServiceMethod(name = "getAgentsIdsInRoom", description = "")
+
 	public void getAgentsIdsInRoom(
-			@JsonMethodParam("objectId") int objectId,
+			int objectId,
 			JsonServiceResponseHandler<List<Integer>> handler);
 
 	/**
@@ -64,8 +47,8 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return the vision radio of this agent
 	 */
-	@JsonServiceMethod(name = "getVisionRadio", description = "")
-	public void getVisionRadio(@JsonMethodParam("objectId") int objectId,
+
+	public void getVisionRadio(int objectId,
 			JsonServiceResponseHandler<Double> handler);
 
 	/**
@@ -77,9 +60,9 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return the points forming the vision radio polygon
 	 */
-	@JsonServiceMethod(name = "getVisionRadioPoints", description = "")
+
 	public void getVisionRadioPoints(
-			@JsonMethodParam("objectId") int objectId,
+			int objectId,
 			JsonServiceResponseHandler<Point[]> handler);
 
 	/**
@@ -95,8 +78,8 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return if the agent is in a door or not
 	 */
-	@JsonServiceMethod(name = "isInDoorArea", description = "")
-	public void isInDoorArea(@JsonMethodParam("objectId") int objectId,
+
+	public void isInDoorArea(int objectId,
 			JsonServiceResponseHandler<Boolean> handler);
 
 	/**
@@ -113,9 +96,9 @@ public interface LowLevelAgentQueryService {
 	 * @return if the agent provided lies in the vision radio of this agent and
 	 *         is in the same room of this agent
 	 */
-	@JsonServiceMethod(name = "isObjectPerceived", description = "")
-	public void isObjectPerceived(@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("objectId") int otherObjectId,
+
+	public void isObjectPerceived(int objectId,
+			int otherObjectId,
 			JsonServiceResponseHandler<Boolean> handler);
 
 	/**
@@ -123,10 +106,10 @@ public interface LowLevelAgentQueryService {
 	 *            the point to check
 	 * @return if the point is contained in the vision area
 	 */
-	@JsonServiceMethod(name = "isPointContainedInVisionArea", description = "")
+
 	public void isPointContainedInVisionArea(
-			@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("point") Point point,
+			int objectId,
+			Point point,
 			JsonServiceResponseHandler<Boolean> handler);
 
 	/**
@@ -139,8 +122,8 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return if this agent it is an obstacle or not.
 	 */
-	@JsonServiceMethod(name = "isObstacle", description = "")
-	public void isObstacle(@JsonMethodParam("objectId") int objectId,
+
+	public void isObstacle(int objectId,
 			JsonServiceResponseHandler<Boolean> handler);
 
 	/**
@@ -154,8 +137,8 @@ public interface LowLevelAgentQueryService {
 	 *
 	 * @return
 	 */
-	@JsonServiceMethod(name = "isDynamic", description = "")
-	public void isDynamic(@JsonMethodParam("objectId") int objectId,
+
+	public void isDynamic(int objectId,
 			JsonServiceResponseHandler<Boolean> handler);
 
 	/**
@@ -169,8 +152,8 @@ public interface LowLevelAgentQueryService {
 	 * @see KPolygon
 	 * @return the body radius of this agent
 	 */
-	@JsonServiceMethod(name = "getBodyRadius", description = "")
-	public void getBodyRadius(@JsonMethodParam("objectId") int objectId,
+
+	public void getBodyRadius(int objectId,
 			JsonServiceResponseHandler<Double> handler);
 
 	/**
@@ -191,10 +174,10 @@ public interface LowLevelAgentQueryService {
 	 *            {@code true}, being {@code false} otherwise.
 	 * @return
 	 */
-	@JsonServiceMethod(name = "isInNamedLocation", description = "")
-	public void isInNamedLocation(@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("name") String name,
-			@JsonMethodParam("radiusWithin") int radiusWithin,
+
+	public void isInNamedLocation(int objectId,
+			String name,
+			int radiusWithin,
 			JsonServiceResponseHandler<Boolean> handler);
 
 	/**
@@ -209,9 +192,9 @@ public interface LowLevelAgentQueryService {
 	 * @return Its value. If the property is not present, {@code null} is
 	 *         returned.
 	 */
-	@JsonServiceMethod(name = "getProperty", description = "")
-	public void getProperty(@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("propertyName") String propertyName,
+
+	public void getProperty(int objectId,
+			String propertyName,
 			JsonServiceResponseHandler<Object> handler);
 
 	/**
@@ -221,24 +204,21 @@ public interface LowLevelAgentQueryService {
 	 *            the property to be checked
 	 * @return if the agent contains that property or not.
 	 */
-	@JsonServiceMethod(name = "hasProperty", description = "")
+
 	public void hasProperty(
 			//
-			@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("propertyName") String propertyName,
+			int objectId,
+			String propertyName,
 			JsonServiceResponseHandler<Boolean> handler);
 
-	@JsonServiceMethod(name = "allLowLevelAgentsIds", description = "")
 	public void allLowLevelAgentsIds(
 			JsonServiceResponseHandler<List<Integer>> handler);
 
-	@JsonServiceMethod(name = "moveTo", description = "")
-	public void moveTo(@JsonMethodParam("objectId") int objectId,
-			@JsonMethodParam("coordinates") Point coordinates,
-			@JsonMethodParam("floorId") int floorId,
+	public void moveTo(int objectId,
+			Point coordinates,
+			int floorId,
 			JsonServiceResponseHandler<Point> handler);
 
-	@JsonServiceMethod(name = "getRandomLoc", description = "")
 	public void getRandomLoc(JsonServiceResponseHandler<Point> handler);
 
 }
