@@ -196,7 +196,10 @@ public interface LowLevelAgentQueryService {
 	public void getProperty(int objectId,
 			String propertyName,
 			JsonServiceResponseHandler<Object> handler);
-
+	
+	public void setProperty(int objectId,
+			String propertyName,Object propertyVal,
+			JsonServiceResponseHandler<Object> handler);
 	/**
 	 * Returns if the agent contains the provided property
 	 *
