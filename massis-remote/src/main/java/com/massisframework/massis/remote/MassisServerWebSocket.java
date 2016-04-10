@@ -1,6 +1,7 @@
 package com.massisframework.massis.remote;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -19,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.massisframework.gui.DrawableLayer;
 import com.massisframework.jsoninvoker.reflect.JsonClientMessage;
+import com.massisframework.jsoninvoker.services.JsonMethod;
 import com.massisframework.jsoninvoker.services.JsonMethodInvoker;
 import com.massisframework.massis.displays.floormap.layers.ConnectionsLayer;
 import com.massisframework.massis.displays.floormap.layers.CrowdDensityLayer;
@@ -35,8 +37,10 @@ import com.massisframework.massis.displays.floormap.layers.RoomsLayer;
 import com.massisframework.massis.displays.floormap.layers.VisibleAgentsLines;
 import com.massisframework.massis.displays.floormap.layers.VisionRadioLayer;
 import com.massisframework.massis.displays.floormap.layers.WallLayer;
+import com.massisframework.massis.remote.jsoninvoker.AbstractServerJsonMethod;
 import com.massisframework.massis.remote.jsoninvoker.lowlevel.GetAgentsInVisionRadio;
 import com.massisframework.massis.remote.jsoninvoker.lowlevel.GetAllLowLevelAgentIds;
+import com.massisframework.massis.remote.jsoninvoker.lowlevel.GetCurrentLocation;
 import com.massisframework.massis.remote.jsoninvoker.lowlevel.GetRoomId;
 import com.massisframework.massis.sim.Simulation;
 import com.massisframework.massis.sim.SimulationWithUI;
@@ -52,24 +56,39 @@ public class MassisServerWebSocket {
 	private final Simulation simState;
 	private final JsonMethodInvoker invoker;
 	private final AtomicLong globalMessageCount = new AtomicLong(0);
+	private final Supplier<Long> counterSup;
 
 	public MassisServerWebSocket() {
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		// TODO fich config
 		this.simState = prepareSim("simplehouse.sh3d");
 		this.invoker = new JsonMethodInvoker();
+		this.counterSup = () -> globalMessageCount.getAndIncrement();
 		this.prepareMethods();
 	}
 
 	private void prepareMethods() {
-		Supplier<Long> counterSup = () -> globalMessageCount.getAndIncrement();
 
-		this.invoker.register("getRoomId", new GetRoomId(simState, counterSup));
-		this.invoker.register("getAgentsInVisionRadio",
-				new GetAgentsInVisionRadio(simState, counterSup));
-		this.invoker.register("allLowLevelAgentsIds",
-				new GetAllLowLevelAgentIds(simState, counterSup));
+		register("getRoomId", GetRoomId.class);
+		register("getAgentsInVisionRadio", GetAgentsInVisionRadio.class);
+		register("allLowLevelAgentsIds", GetAllLowLevelAgentIds.class);
+		register("getLocation", GetCurrentLocation.class);
 
+	}
+
+	private void register(String name,
+			Class<? extends AbstractServerJsonMethod> clazz) {
+		try {
+			AbstractServerJsonMethod instance = clazz
+					.getConstructor(Simulation.class, Supplier.class)
+					.newInstance(this.simState, this.counterSup);
+			this.invoker.register(name, instance);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@OnWebSocketConnect

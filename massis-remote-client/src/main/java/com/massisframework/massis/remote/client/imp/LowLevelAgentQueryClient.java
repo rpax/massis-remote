@@ -186,4 +186,11 @@ public class LowLevelAgentQueryClient implements LowLevelAgentQueryService {
 				new JsonClientMessage<>("getRandomLoc", handler, Point.class,
 						0));
 	}
+
+	@Override
+	public void getCurrentLocation(int objectId,
+			JsonServiceResponseHandler<Point> handler) {
+		this.sender.send(new JsonClientMessage<>("getLocation", handler,
+				Point.class, objectId));
+	}
 }

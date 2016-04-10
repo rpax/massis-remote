@@ -317,4 +317,11 @@ public class LowLevelAgentQueryServiceServerImpl
 
 	}
 
+	@Override
+	public void getCurrentLocation(int objectId,JsonServiceResponseHandler<Point> handler) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
 }

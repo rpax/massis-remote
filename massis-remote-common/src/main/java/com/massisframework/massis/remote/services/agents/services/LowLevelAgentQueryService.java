@@ -220,5 +220,7 @@ public interface LowLevelAgentQueryService {
 			JsonServiceResponseHandler<Point> handler);
 
 	public void getRandomLoc(JsonServiceResponseHandler<Point> handler);
+	
+	public void getCurrentLocation(int objectId,JsonServiceResponseHandler<Point> handler);
 
 }

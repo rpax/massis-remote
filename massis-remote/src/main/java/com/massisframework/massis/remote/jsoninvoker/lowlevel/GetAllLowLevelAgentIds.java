@@ -13,7 +13,7 @@ import com.massisframework.massis.model.building.Floor;
 import com.massisframework.massis.remote.jsoninvoker.AbstractServerJsonMethod;
 import com.massisframework.massis.sim.Simulation;
 
-public class GetAllLowLevelAgentIds extends AbstractServerJsonMethod
+public class GetAllLowLevelAgentIds extends AbstractServerJsonMethod<List<Integer>>
 		implements JsonMethod1<Integer, List<Integer>> {
 
 	public GetAllLowLevelAgentIds(Simulation simulation,

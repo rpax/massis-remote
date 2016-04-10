@@ -1,6 +1,7 @@
 package com.massisframework.massis.remote.jsoninvoker.lowlevel;
 
 import java.awt.geom.Point2D;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.massisframework.jsoninvoker.reflect.JsonServiceResponseHandler;
@@ -10,7 +11,7 @@ import com.massisframework.massis.model.location.Location;
 import com.massisframework.massis.remote.jsoninvoker.AbstractServerJsonMethod;
 import com.massisframework.massis.sim.Simulation;
 
-public class GetRandomLoc extends AbstractServerJsonMethod
+public class GetRandomLoc extends AbstractServerJsonMethod<Point2D>
 		implements JsonMethod1<Integer, Point2D> {
 
 	public GetRandomLoc(Simulation simulation,

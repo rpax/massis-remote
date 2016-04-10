@@ -1,5 +1,6 @@
 package com.massisframework.massis.remote.jsoninvoker.lowlevel;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.massisframework.jsoninvoker.reflect.JsonServiceResponseHandler;
@@ -9,7 +10,7 @@ import com.massisframework.massis.model.agents.LowLevelAgent;
 import com.massisframework.massis.remote.jsoninvoker.AbstractServerJsonMethod;
 import com.massisframework.massis.sim.Simulation;
 
-public class GetRoomId extends AbstractServerJsonMethod
+public class GetRoomId extends AbstractServerJsonMethod<Integer>
 		implements JsonMethod1<Integer, Integer> {
 
 	public GetRoomId(Simulation simulation, Supplier<Long> methodIdSupplier) {

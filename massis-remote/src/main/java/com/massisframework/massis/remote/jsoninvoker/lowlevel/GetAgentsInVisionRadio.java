@@ -11,7 +11,8 @@ import com.massisframework.massis.model.agents.LowLevelAgent;
 import com.massisframework.massis.remote.jsoninvoker.AbstractServerJsonMethod;
 import com.massisframework.massis.sim.Simulation;
 
-public class GetAgentsInVisionRadio extends AbstractServerJsonMethod
+public class GetAgentsInVisionRadio
+		extends AbstractServerJsonMethod<List<Integer>>
 		implements JsonMethod1<Integer, List<Integer>> {
 
 	public GetAgentsInVisionRadio(Simulation simulation,
